@@ -32,10 +32,16 @@ function App() {
   };
 
   const addToFavorites = (flight) => {
-    const isAlreadyFavorite = favorites.some(f => f.flight_iata === flight.flight_iata);
-    if (!isAlreadyFavorite) {
-      setFavorites([...favorites, flight]);
-    }
+    if (!flight || (!flight.flight_iata && !flight.flight?.iata)) return;
+    
+    setFavorites(prev => {
+      const flightId = flight.flight_iata || flight.flight?.iata;
+      const isAlreadyFavorite = prev.some(f => 
+        (f.flight_iata || f.flight?.iata) === flightId
+      );
+      if (isAlreadyFavorite) return prev;
+      return [...prev, flight];
+    });
   };
 
   const removeFromFavorites = (flightIata) => {
